@@ -106,9 +106,32 @@ export default function App() {
   return (
     <Container style={{ textAlign: 'center' }}>
       <h1>Need Catchy Title</h1>
-      <Grid container justify='center' direction='column'>
+      <Grid container justify='center' direction='column' spacing={3}>
+        <TextField required fullwidth id="standard-required" label="Statement" onChange={event => setStatement(event.target.value)} />
         <Grid item>
-          <TextField required id="standard-required" label="Statement" onChange={event => setStatement(event.target.value)} />
+          <TextField required fullwidth id="standard-required" label="Context" onChange={event => setContext(event.target.value)} />
+        </Grid>
+        <Grid item>
+          <FormControl>
+            <InputLabel id="demo-controlled-open-select-label">Speaker</InputLabel>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              open={open}
+              onClose={handleClose}
+              onOpen={handleOpen}
+              value={speaker}
+              onChange={handleChange}
+            >
+              {
+                topSpeakers.map(speaker => (
+                  <MenuItem value={speaker}>
+                    {speaker}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item>
           <FormControl className={classes.formControl}>
@@ -136,31 +159,6 @@ export default function App() {
               ))}
             </Select>
           </FormControl>
-        </Grid>
-        <Grid item>
-          <FormControl>
-            <InputLabel id="demo-controlled-open-select-label">Speaker</InputLabel>
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              open={open}
-              onClose={handleClose}
-              onOpen={handleOpen}
-              value={speaker}
-              onChange={handleChange}
-            >
-              {
-                topSpeakers.map(speaker => (
-                  <MenuItem value={speaker}>
-                    {speaker}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item>
-          <TextField required id="standard-required" label="Context" onChange={event => setContext(event.target.value)} />
         </Grid>
         <Grid item>
           <Button onClick={postData}>Classify</Button>
