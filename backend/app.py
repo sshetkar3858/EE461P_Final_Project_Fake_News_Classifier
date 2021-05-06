@@ -7,6 +7,8 @@ app = Flask(__name__)
 CORS(app)
 
 model = None
+model_multi_class = None
+model_statement = None
 train = None
 
 
@@ -14,6 +16,12 @@ def load_catboost():
     global model
     model = CatBoostClassifier()
     model.load_model('best_catboost')
+    global model_multi_class
+    model_multi_class = CatBoostClassifier()
+    model_multi_class.load_model('best_catboost_multi_class')
+    global model_statement
+    model_statement = CatBoostClassifier()
+    model_statement.load_model('catboost_just_statement')
     global train
     train = pd.read_csv('train.tsv', delimiter='\t', header=None)
     rename_columns = ['ID', 'label', 'statement', 'subjects', 'speaker', 'speaker_job_title', 'state_info',
