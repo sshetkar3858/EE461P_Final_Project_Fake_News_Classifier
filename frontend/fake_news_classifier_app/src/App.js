@@ -50,6 +50,8 @@ export default function App() {
   const classes = useStyles();
   const theme = useTheme();
 
+  const multiClass = ['Barely True', 'False', 'Half True', 'Mostly True', 'Pants on Fire', 'True']
+
   const topSpeakers = ['barack-obama', 'donald-trump', 'hillary-clinton',
     'mitt-romney', 'scott-walker', 'john-mccain', 'rick-perry',
     'marco-rubio', 'rick-scott', 'ted-cruz'];
@@ -67,6 +69,26 @@ export default function App() {
   const [probTrue, setProbTrue] = React.useState(-1);
 
   const [currentAnswer, setCurrentAnswer] = React.useState('Please enter in some news!');
+  const [currentMultiClassAnswer, setCurrentMultiClassAnswer] = React.useState('');
+  const [currentStatementAnswer, setCurrentStatementAnswer] = React.useState('');
+
+  // function indexOfMax(arr) {
+  //   if (arr.length === 0) {
+  //     return -1;
+  //   }
+
+  //   var max = arr[0];
+  //   var maxIndex = 0;
+
+  //   for (var i = 1; i < arr.length; i++) {
+  //     if (arr[i] > max) {
+  //       maxIndex = i;
+  //       max = arr[i];
+  //     }
+  //   }
+
+  //   return maxIndex;
+  // }
 
   function postData() {
     const data = {
@@ -77,10 +99,19 @@ export default function App() {
     };
     axios.post('http://127.0.0.1:5000/', data).then(response => {
       console.log(response);
-      const probTrueResp = response.data.probTrue
-      const answer = probTrueResp > 0.5 ? 'True with confidence ' + parseFloat(probTrueResp) : 'False with confidence ' + parseFloat(1 - probTrueResp);
+      const probTrueResp = response.data.probTrueBest
+      const probMultiRespVal = response.data.probTrueBestMultiVal
+      const probMultiRespIdx = response.data.probTrueBestMultiIdx
+      const probTrueStatement = response.data.probTrueStatement
+      const answer = 'Binary Classification: ' + (probTrueResp > 0.5 ? 'True with confidence ' + parseFloat(probTrueResp) : 'False with confidence ' + parseFloat(1 - probTrueResp));
+      const answerMultiClass = 'Multiclass Classification: ' + multiClass[probMultiRespIdx] + ' with confidence ' + parseFloat(probMultiRespVal)
+      const answerStatement = 'Binary Classification (Statement Only): ' + (probTrueStatement > 0.5 ? 'True with confidence ' + parseFloat(probTrueStatement) : 'False with confidence ' + parseFloat(1 - probTrueStatement));
+
+
       setProbTrue(probTrueResp);
       setCurrentAnswer(answer);
+      setCurrentMultiClassAnswer(answerMultiClass)
+      setCurrentStatementAnswer(answerStatement)
     }).catch(e => {
       console.log(e);
     })
@@ -107,9 +138,7 @@ export default function App() {
       <h1>Need Catchy Title</h1>
       <Grid container justify='center' direction='column' spacing={3}>
         <TextField required fullwidth id="standard-required" label="Statement" onChange={event => setStatement(event.target.value)} />
-        <Grid item>
-          <TextField required fullwidth id="standard-required" label="Context" onChange={event => setContext(event.target.value)} />
-        </Grid>
+        <TextField required fullwidth id="standard-required" label="Context" onChange={event => setContext(event.target.value)} />
         <Grid item>
           <FormControl>
             <InputLabel id="demo-controlled-open-select-label">Speaker</InputLabel>
@@ -166,7 +195,9 @@ export default function App() {
       <h1>Classification</h1>
       <Card>
         <CardContent>
-          {currentAnswer}
+          <Typography>{currentAnswer}</Typography>
+          <Typography>{currentMultiClassAnswer}</Typography>
+          <Typography>{currentStatementAnswer}</Typography>
         </CardContent>
       </Card>
     </Container >

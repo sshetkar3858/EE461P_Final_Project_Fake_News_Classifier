@@ -61,10 +61,26 @@ def index():
     # predict
     # probs = (0.1, 0.9)
     global model
-    probs = model.predict_proba(data_point)
-    print(probs)
+    probs_best_model = model.predict_proba(data_point)
+    print(probs_best_model)
 
-    return jsonify({'probTrue': probs[0][1]})
+    global model_multi_class
+    probs_best_model_multi_class = model_multi_class.predict_proba(data_point)
+    maxIdx = -1
+    maxVal = -1
+    for i in range(len(probs_best_model_multi_class[0])):
+        curr = probs_best_model_multi_class[0][i]
+        if curr > maxVal:
+            maxVal = curr
+            maxIdx = i
+    print(probs_best_model_multi_class)
+
+    global model_statement
+    probs_model_statement = model_statement.predict_proba(
+        pd.DataFrame(data_point['statement']))
+    print(probs_model_statement)
+
+    return jsonify({'probTrueBest': probs_best_model[0][1], 'probTrueBestMultiIdx': maxIdx, 'probTrueBestMultiVal': maxVal, 'probTrueStatement': probs_model_statement[0][1]})
 
 
 if __name__ == '__main__':
