@@ -135,7 +135,7 @@ export default function App() {
 
   return (
     <Container style={{ textAlign: 'center' }}>
-      <h1>Need Catchy Title</h1>
+      <h1>Are they lying?</h1>
       <Grid container justify='center' direction='column' spacing={3}>
         <TextField required fullwidth id="standard-required" label="Statement" onChange={event => setStatement(event.target.value)} />
         <TextField required fullwidth id="standard-required" label="Context" onChange={event => setContext(event.target.value)} />
