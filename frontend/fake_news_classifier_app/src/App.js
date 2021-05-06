@@ -37,10 +37,10 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
+function getStyles(name, subjects, theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
+      subjects.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
@@ -66,7 +66,7 @@ export default function App() {
 
   const [probTrue, setProbTrue] = React.useState(-1);
 
-  const [currentAnswer, setCurrentAnswer] = React.useState('');
+  const [currentAnswer, setCurrentAnswer] = React.useState('Please enter in some news!');
 
   function postData() {
     const data = {
@@ -78,8 +78,7 @@ export default function App() {
     axios.post('http://127.0.0.1:5000/', data).then(response => {
       console.log(response);
       const probTrueResp = response.data.probTrue
-      const probTrueRespStr = parseFloat(probTrueResp);
-      const answer = probTrueResp > 0.5 ? 'True with confidence ' + probTrueRespStr : 'False with confidence ' + probTrueRespStr;
+      const answer = probTrueResp > 0.5 ? 'True with confidence ' + parseFloat(probTrueResp) : 'False with confidence ' + parseFloat(1 - probTrueResp);
       setProbTrue(probTrueResp);
       setCurrentAnswer(answer);
     }).catch(e => {
