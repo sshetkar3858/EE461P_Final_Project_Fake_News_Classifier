@@ -13,6 +13,7 @@ train = None
 
 
 def load_catboost():
+    print(' * Loading Catboost...')
     global model
     model = CatBoostClassifier()
     model.load_model('best_catboost')
@@ -29,7 +30,7 @@ def load_catboost():
                       'context'
                       ]
     train.columns = rename_columns
-
+load_catboost()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -42,7 +43,12 @@ def index():
 
     # get associated data
     global train
-    assoc_data = train[train['speaker'] == speaker].iloc[0]
+    try:
+        assoc_data = train[train['speaker'] == speaker].iloc[0]
+    except:
+        load_catboost()
+        assoc_data = train[train['speaker'] == speaker].iloc[0]
+        
     print(assoc_data)
 
     data_point['statement'] = [request.json.get('statement')]
